@@ -5,34 +5,19 @@ import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Tooltip, Lege
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Tooltip, Legend);
 
-const fakeRevenueData = [
-    { month: '1', revenue: 1000 },
-    { month: '2', revenue: 1500 },
-    { month: '3', revenue: 2000 },
-    { month: '4', revenue: 2500 },
-    { month: '5', revenue: 3000 },
-    { month: '6', revenue: 3500 },
-    { month: '7', revenue: 4000 },
-    { month: '8', revenue: 4500 },
-    { month: '9', revenue: 5000 },
-    { month: '10', revenue: 5500 },
-    { month: '11', revenue: 6000 },
-    { month: '12', revenue: 6500 },
-];
-
-const totalRevenues = fakeRevenueData.reduce((total, item) => total + item.revenue, 0);
-
-const BarChart = () => {
-    const data = {
-        labels: fakeRevenueData.map(data => data.month),
+const BarChart = ({ data }) => {
+    const chartData = {
+        labels: data.map(item => item.day),
         datasets: [
             {
                 label: 'Revenue',
-                data: fakeRevenueData.map(data => data.revenue),
+                data: data.map(item => item.revenue),
                 backgroundColor: '#FF00CC',
             },
         ],
     };
+
+    const totalRevenues = data.reduce((total, item) => total + item.revenue, 0);
 
     return (
         <div className='w-1/3'>
@@ -40,8 +25,8 @@ const BarChart = () => {
                 <Layout.Section>
                     <LegacyCard title="Revenue" sectioned>
                         <div className="flex flex-col w-full">
-                            <h1 className='text-xl font-bold'>{totalRevenues}</h1>
-                            <Bar data={data} height={50} width={100} />
+                            <h1 className='text-xl font-bold'>${totalRevenues}</h1>
+                            <Bar data={chartData} height={50} width={100} />
                         </div>
                     </LegacyCard>
                 </Layout.Section>
