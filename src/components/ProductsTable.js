@@ -5,7 +5,6 @@ import {
     IndexFilters,
     useSetIndexFiltersMode,
     useIndexResourceState,
-    Text,
     useBreakpoints,
     Button,
     Badge,
@@ -21,6 +20,7 @@ const ProductsTable = () => {
     const [data, setData] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
     const itemsPerPage = 7;
+    const [currentFilter, setCurrentFilter] = useState('All');
 
     useEffect(() => {
         const fetchData = async () => {
@@ -45,7 +45,7 @@ const ProductsTable = () => {
     const tabs = itemStrings.map((item, index) => ({
         content: item,
         index,
-        onAction: () => { },
+        onAction: () => setCurrentFilter(item),
         id: `${item}-${index}`,
         isLocked: index === 0,
     }));
@@ -105,10 +105,21 @@ const ProductsTable = () => {
 
     const startIndex = (currentPage - 1) * itemsPerPage;
     const endIndex = startIndex + itemsPerPage;
-    const paginatedData = data.slice(startIndex, endIndex);
+
+    const filteredData = data.filter(item => {
+        const value = item.id % 2 === 0 ? 0 : Math.floor(Math.random() * 5) + 1;
+        if (currentFilter === 'Active') {
+            return value !== 0;
+        } else if (currentFilter === 'No rule') {
+            return value === 0;
+        }
+        return true;
+    });
+
+    const paginatedData = filteredData.slice(startIndex, endIndex);
 
     const rowMarkup = paginatedData.map((item, index,) => {
-        const value = item.id % 2 === 0 ? 0 : Math.floor(Math.random() * 5);
+        const value = item.id % 2 === 0 ? 0 : Math.floor(Math.random() * 5) + 1;
         return (
             <IndexTable.Row
                 id={item.id}
@@ -117,11 +128,13 @@ const ProductsTable = () => {
                 position={index}
             >
                 <IndexTable.Cell>
+                    {/* Ảnh dữ liệu thay cho data từ link đề bài */}
                     <Thumbnail source={require('../assets/image/images.jpg')} alt="Product Image" />
                 </IndexTable.Cell>
                 <IndexTable.Cell>{item.title}</IndexTable.Cell>
                 <IndexTable.Cell>{value}</IndexTable.Cell>
                 <IndexTable.Cell>{item.title}</IndexTable.Cell>
+                {/* dữ liệu thay cho data từ link đề bài */}
                 <IndexTable.Cell>
                     {value === 0 ? (
                         <Badge>No rule</Badge>
