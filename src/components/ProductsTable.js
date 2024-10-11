@@ -15,12 +15,16 @@ import {
     PlusIcon
 } from '@shopify/polaris-icons';
 import axios from "axios";
+import AddProductModal from "./modals/AddRuleModal";
 
 const ProductsTable = () => {
     const [data, setData] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
+    const [currentFilter, setCurrentFilter] = useState('All')
+    const [isAddRuleModalActive, setIsAddRuleModalActive] = useState(false);
+    const [selectedProduct, setSelectedProduct] = useState(null);
+
     const itemsPerPage = 7;
-    const [currentFilter, setCurrentFilter] = useState('All');
 
     useEffect(() => {
         const fetchData = async () => {
@@ -82,7 +86,7 @@ const ProductsTable = () => {
         {
             id: '1020',
             image: 'image',
-            product: 'Bàn',
+            product: 'Table',
             rule: 1,
             lastUpdate: '19/02/2021',
             status: "Active",
@@ -90,7 +94,7 @@ const ProductsTable = () => {
         {
             id: '1021',
             image: 'image',
-            product: 'ghế',
+            product: 'Chair',
             rule: 1,
             lastUpdate: '19/02/2021',
             status: "Active",
@@ -142,7 +146,17 @@ const ProductsTable = () => {
                         <Badge tone="success">Active</Badge>
                     )}
                 </IndexTable.Cell>
-                <IndexTable.Cell><Button icon={PlusIcon} children={"Add Rule"} variant="primary" /></IndexTable.Cell>
+                <IndexTable.Cell>
+                    <Button
+                        icon={PlusIcon}
+                        children={"Add Rule"}
+                        variant="primary"
+                        onClick={() => {
+                            setSelectedProduct(item);
+                            setIsAddRuleModalActive(true);
+                        }}
+                    />
+                </IndexTable.Cell>
             </IndexTable.Row>
         );
     });
@@ -194,6 +208,12 @@ const ProductsTable = () => {
                 hasNext={endIndex < data.length}
                 onNext={() => setCurrentPage(currentPage + 1)}
             />
+            {isAddRuleModalActive && (
+                <AddProductModal
+                    active={isAddRuleModalActive}
+                    handleChange={() => setIsAddRuleModalActive(false)}
+                />
+            )}
         </LegacyCard>
     );
 }
